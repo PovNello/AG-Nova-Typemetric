@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- STRUCTURE COLOURS -->
+    <SolidColorBrush x:Key="NovaSpace" Color="#08111B"/>
+    <SolidColorBrush x:Key="NovaChassis" Color="#0E1A2A"/>
+    <SolidColorBrush x:Key="NovaPanel" Color="#142437"/>
+    <SolidColorBrush x:Key="NovaPanelAlt" Color="#1A2E45"/>
+    <SolidColorBrush x:Key="NovaBorder" Color="#314B63"/>
+    <SolidColorBrush x:Key="NovaGrid" Color="#22374D"/>
+
+    <!-- OPERATIONAL ACCENTS -->
+    <SolidColorBrush x:Key="NovaCyan" Color="#8FD8E0"/>
+    <SolidColorBrush x:Key="NovaCyanBright" Color="#B8F3FF"/>
+    <SolidColorBrush x:Key="NovaOrange" Color="#E6822F"/>
+    <SolidColorBrush x:Key="NovaIvory" Color="#DCCFAA"/>
+    <SolidColorBrush x:Key="NovaDanger" Color="#D56756"/>
+
+    <!-- TEXT COLOURS -->
+    <SolidColorBrush x:Key="NovaTextPrimary" Color="#F3F3EE"/>
+    <SolidColorBrush x:Key="NovaTextSecondary" Color="#CBD5E1"/>
+    <SolidColorBrush x:Key="NovaTextMuted" Color="#7D90A6"/>
+    <SolidColorBrush x:Key="NovaTextDiagnostic" Color="#587187"/>
+
+    <!-- GRID BACKGROUND BRUSH -->
+    <DrawingBrush x:Key="NovaGridBackground" Viewport="0,0,40,40" ViewportUnits="Absolute" TileMode="Tile">
+        <DrawingBrush.Drawing>
+            <GeometryDrawing>
+                <GeometryDrawing.Pen>
+                    <Pen Brush="{StaticResource NovaGrid}" Thickness="1"/>
+                </GeometryDrawing.Pen>
+                <GeometryDrawing.Geometry>
+                    <GeometryGroup>
+                        <LineGeometry StartPoint="0,0" EndPoint="40,0" />
+                        <LineGeometry StartPoint="0,0" EndPoint="0,40" />
+                    </GeometryGroup>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    
+    <!-- STYLES -->
+    <Style x:Key="NovaPanelStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource NovaPanel}" />
+        <Setter Property="BorderBrush" Value="{StaticResource NovaBorder}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+</ResourceDictionary>

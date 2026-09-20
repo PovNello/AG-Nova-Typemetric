@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.0.1] - 2026-09-20
 ### Added
 - Setup Wizard on first run to choose SQLite database location.
 - GlobalHooks implementation to capture system-wide keystrokes and mouse clicks.

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="256" height="256">
+  <!-- Deep Blue Hexagon Background with Cyan border -->
+  <polygon points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5" fill="#142437" stroke="#8FD8E0" stroke-width="4" stroke-linejoin="round"/>
+  
+  <!-- Heat-Matrix (2x2 Grid) in the center -->
+  <!-- Top Left: Cyan (Cold) -->
+  <rect x="33" y="33" width="15" height="15" fill="#8FD8E0" rx="2" />
+  
+  <!-- Top Right: Ivory (Warm) -->
+  <rect x="52" y="33" width="15" height="15" fill="#DCCFAA" rx="2" />
+  
+  <!-- Bottom Left: Orange (Hot) -->
+  <rect x="33" y="52" width="15" height="15" fill="#E6822F" rx="2" />
+  
+  <!-- Bottom Right: Danger Red (Peak) -->
+  <rect x="52" y="52" width="15" height="15" fill="#D56756" rx="2" />
+</svg>

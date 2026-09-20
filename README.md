@@ -13,5 +13,6 @@ The documentation is heavily sectioned to facilitate modular reading by AI agent
 ## General Information
 
 - [CHANGELOG.md](CHANGELOG.md) - Release notes and recent bug fixes.
-- [TODO.md](TODO.md) - Pending tasks, including the `.exe` packaging instructions.
+- [TODO.md](TODO.md) - Pending tasks.
 - [CLAUDE.md](CLAUDE.md) - AI assistant instructions and development rules.
+- [RELEASE_GUIDE.md](docs/RELEASE_GUIDE.md) - Guide for creating and publishing future releases.

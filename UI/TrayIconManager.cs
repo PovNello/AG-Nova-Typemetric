@@ -17,12 +17,16 @@ namespace Typemetric.UI
             _tracker = tracker;
             _db = db;
 
-            _taskbarIcon = new TaskbarIcon
+            var iconUri = new Uri("pack://application:,,,/Assets/icon.ico", UriKind.Absolute);
+            using (var stream = Application.GetResourceStream(iconUri).Stream)
             {
-                ToolTipText = "AG Nova Typemetric",
-                Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location),
-                Visibility = Visibility.Visible
-            };
+                _taskbarIcon = new TaskbarIcon
+                {
+                    ToolTipText = "AG Nova Typemetric",
+                    Icon = new System.Drawing.Icon(stream),
+                    Visibility = Visibility.Visible
+                };
+            }
             _taskbarIcon.ForceCreate();
 
             ContextMenu menu = new ContextMenu();

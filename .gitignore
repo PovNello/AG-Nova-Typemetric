@@ -1,0 +1,11 @@
+# Ignora gli eseguibili compilati
+*.exe
+
+# Cartelle di build standard .NET
+bin/
+obj/
+
+# File temporanei
+*.user
+*.suo
+.vs/

@@ -3,26 +3,55 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Typemetric Setup" Height="300" Width="550"
         WindowStyle="None" Background="Transparent" AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
     
     <Border Background="{StaticResource NovaSpace}" BorderBrush="{StaticResource NovaBorder}" BorderThickness="2">
         <Grid Margin="24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+            <!-- STEP 1 -->
+            <Grid x:Name="Step1Grid" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="TYPEMETRIC // INITIALIZATION" Foreground="{StaticResource NovaCyan}" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
-            <TextBlock Grid.Row="1" Text="Select a secure location to store your telemetry database (metrics.db). This can be a synced folder like OneDrive or Dropbox to ensure data recovery." Foreground="{StaticResource NovaTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,24" FontSize="14"/>
-            
-            <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Top">
-                <TextBox x:Name="PathTextBox" Width="360" Height="36" Background="{StaticResource NovaPanelAlt}" Foreground="{StaticResource NovaTextPrimary}" BorderBrush="{StaticResource NovaBorder}" Padding="8" IsReadOnly="True" VerticalContentAlignment="Center"/>
-                <Button Content="BROWSE" Margin="12,0,0,0" Width="100" Height="36" Background="{StaticResource NovaPanelAlt}" Foreground="{StaticResource NovaTextPrimary}" BorderBrush="{StaticResource NovaBorder}" Click="BrowseButton_Click" Cursor="Hand"/>
-            </StackPanel>
+                <TextBlock Grid.Row="0" Text="TYPEMETRIC // INITIALIZATION (STEP 1/2)" Foreground="{StaticResource NovaCyan}" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
+                <StackPanel Grid.Row="1" Margin="0,0,0,24">
+                    <TextBlock Text="Select a secure location to store your main telemetry database (metrics.db)." Foreground="{StaticResource NovaTextSecondary}" TextWrapping="Wrap" FontSize="14" Margin="0,0,0,4"/>
+                    <TextBlock Text="* Note: A backup copy of the database will be automatically maintained in the application's root folder." Foreground="{StaticResource NovaTextSecondary}" FontStyle="Italic" TextWrapping="Wrap" FontSize="12"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Top">
+                    <TextBox x:Name="PathTextBox" Width="360" Height="36" Background="{StaticResource NovaPanelAlt}" Foreground="{StaticResource NovaTextPrimary}" BorderBrush="{StaticResource NovaBorder}" Padding="8" IsReadOnly="True" VerticalContentAlignment="Center"/>
+                    <Button Content="BROWSE" Margin="12,0,0,0" Width="100" Height="36" Background="{StaticResource NovaPanelAlt}" Foreground="{StaticResource NovaTextPrimary}" BorderBrush="{StaticResource NovaBorder}" Click="BrowseButton_Click" Cursor="Hand"/>
+                </StackPanel>
 
-            <Button Grid.Row="3" Content="INITIALIZE CORE" HorizontalAlignment="Right" Background="{StaticResource NovaCyan}" Foreground="{StaticResource NovaSpace}" FontWeight="Bold" Padding="24,12" Click="InitButton_Click" Cursor="Hand" BorderThickness="0"/>
+                <Button Grid.Row="3" Content="NEXT >>" HorizontalAlignment="Right" Background="{StaticResource NovaCyan}" Foreground="{StaticResource NovaSpace}" FontWeight="Bold" Padding="24,12" Click="NextButton_Click" Cursor="Hand" BorderThickness="0"/>
+            </Grid>
+
+            <!-- STEP 2 -->
+            <Grid x:Name="Step2Grid" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="TYPEMETRIC // INITIALIZATION (STEP 2/2)" Foreground="{StaticResource NovaCyan}" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
+                <StackPanel Grid.Row="1" Margin="0,0,0,24">
+                    <TextBlock Text="Do you want Typemetric to start automatically with Windows?" Foreground="{StaticResource NovaTextSecondary}" TextWrapping="Wrap" FontSize="14" Margin="0,0,0,4"/>
+                    <TextBlock Text="This will place a shortcut (.lnk) in your Windows Startup folder. It does not modify the System Registry, keeping the app 100% portable." Foreground="{StaticResource NovaTextSecondary}" FontStyle="Italic" TextWrapping="Wrap" FontSize="12"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Top">
+                    <CheckBox x:Name="StartupCheckBox" Content="Run Typemetric at Windows Startup" Foreground="{StaticResource NovaTextPrimary}" FontSize="14" VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <Button Grid.Row="3" Content="FINISH SETUP" HorizontalAlignment="Right" Background="{StaticResource NovaCyan}" Foreground="{StaticResource NovaSpace}" FontWeight="Bold" Padding="24,12" Click="InitButton_Click" Cursor="Hand" BorderThickness="0"/>
+            </Grid>
         </Grid>
     </Border>
 </Window>

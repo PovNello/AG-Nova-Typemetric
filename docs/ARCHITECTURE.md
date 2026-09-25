@@ -15,8 +15,8 @@ Typemetric is built as a .NET 10 WPF application, prioritizing low resource usag
 - Flushes the totals to the `DatabaseManager` asynchronously every 60 seconds to minimize disk I/O and prevent locking.
 
 ### 3. StartupManager (`Core/StartupManager.cs`)
-- Interacts directly with the Windows Registry (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`).
-- Registers the application executable to run silently on OS boot.
+- Manages the application's boot persistence while maintaining portable design principles.
+- Creates or removes a shortcut (`.lnk`) in the user's Startup folder (`%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`) using `WScript.Shell` via reflection.
 
 ### 4. TrayIconManager (`UI/TrayIconManager.cs`)
 - Implements `H.NotifyIcon.Wpf` to run the app as a system tray icon.

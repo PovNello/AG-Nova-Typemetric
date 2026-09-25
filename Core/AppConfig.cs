@@ -8,7 +8,9 @@ namespace Typemetric.Core
     {
         public string DbPath { get; set; }
 
-        private static string ConfigFile => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Typemetric", "config.json");
+        public bool RunAtStartup { get; set; } = false;
+
+        private static string ConfigFile => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
 
         public static AppConfig Load()
         {
@@ -20,11 +22,23 @@ namespace Typemetric.Core
             return new AppConfig();
         }
 
-        public void Save()
+        public bool Save()
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(ConfigFile));
-            string json = JsonSerializer.Serialize(this);
-            File.WriteAllText(ConfigFile, json);
+            try
+            {
+                string dir = Path.GetDirectoryName(ConfigFile);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+                string json = JsonSerializer.Serialize(this);
+                File.WriteAllText(ConfigFile, json);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
         }
     }
 }

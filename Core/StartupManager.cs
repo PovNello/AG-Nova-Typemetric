@@ -1,23 +1,35 @@
 using Microsoft.Win32;
 using System;
 using System.Reflection;
+using System.IO;
 
 namespace Typemetric.Core
 {
     public static class StartupManager
     {
-        private const string AppName = "AGNovaTypemetric";
-        
+        private const string ShortcutName = "AGNovaTypemetric.lnk";
+
+        private static string GetStartupFolderPath()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName);
+        }
+
         public static void EnableRunAtStartup()
         {
             try
             {
-                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-                string exePath = Environment.ProcessPath; // Gets the actual .exe when published
-                
+                string shortcutPath = GetStartupFolderPath();
+                string exePath = Environment.ProcessPath;
+
                 if (!string.IsNullOrEmpty(exePath))
                 {
-                    key?.SetValue(AppName, $"\"{exePath}\"");
+                    Type t = Type.GetTypeFromProgID("WScript.Shell");
+                    dynamic shell = Activator.CreateInstance(t);
+                    dynamic shortcut = shell.CreateShortcut(shortcutPath);
+                    shortcut.TargetPath = exePath;
+                    shortcut.WorkingDirectory = Path.GetDirectoryName(exePath);
+                    shortcut.Description = "Typemetric Startup";
+                    shortcut.Save();
                 }
             }
             catch { /* Log silently if needed */ }
@@ -27,8 +39,11 @@ namespace Typemetric.Core
         {
             try
             {
-                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-                key?.DeleteValue(AppName, false);
+                string shortcutPath = GetStartupFolderPath();
+                if (File.Exists(shortcutPath))
+                {
+                    File.Delete(shortcutPath);
+                }
             }
             catch { }
         }
@@ -37,8 +52,8 @@ namespace Typemetric.Core
         {
             try
             {
-                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", false);
-                return key?.GetValue(AppName) != null;
+                string shortcutPath = GetStartupFolderPath();
+                return File.Exists(shortcutPath);
             }
             catch
             {

@@ -2,6 +2,7 @@
 
 Typemetric uses a local `SQLite` database (`metrics.db`) to persist telemetry.
 The absolute path is determined by the `AppConfig` and can be chosen by the user during the first-run Setup Wizard.
+To ensure data integrity and true portability, all database transactions are simultaneously mirrored to a local backup file (`metrics_backup.db`) stored directly in the application's base directory.
 
 ## Privacy & Security Constraints
 

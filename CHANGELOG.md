@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [0.0.2] - 2026-09-25
+### Changed
+- Converted application to be 100% portable by moving `config.json` saving logic from `%LocalAppData%` to the app's root directory.
+- Replaced Windows Registry startup method with a portable-friendly Startup folder shortcut (`.lnk`) mechanism.
+- Enhanced Database Manager to mirror all telemetry transactions to a local `metrics_backup.db` within the app folder.
+- Expanded Setup Wizard into two steps to handle database location and portable startup preferences.
+- Added database recovery logic to prompt for restore if the primary database is missing but the local backup exists.
 
 ## [0.0.1] - 2026-09-20
 ### Added

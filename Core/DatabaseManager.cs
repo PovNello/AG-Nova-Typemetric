@@ -7,20 +7,19 @@ namespace Typemetric.Core
     public class DatabaseManager
     {
         private readonly string _connectionString;
+        private readonly string _backupConnectionString;
 
         public DatabaseManager(string dbPath)
         {
             _connectionString = $"Data Source={dbPath}";
+            string backupPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "metrics_backup.db");
+            _backupConnectionString = $"Data Source={backupPath}";
             InitializeDatabase();
         }
 
         private void InitializeDatabase()
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = @"
+            string schema = @"
                 CREATE TABLE IF NOT EXISTS KeyStats (
                     Date TEXT NOT NULL,
                     KeyName TEXT NOT NULL,
@@ -40,86 +39,129 @@ namespace Typemetric.Core
                     PRIMARY KEY (Date, Direction)
                 );
             ";
-            command.ExecuteNonQuery();
+
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = schema;
+                command.ExecuteNonQuery();
+            }
+
+            using (var connection = new SqliteConnection(_backupConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = schema;
+                command.ExecuteNonQuery();
+            }
         }
 
         public void IncrementKeyCounts(string date, Dictionary<string, int> keys)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-
-            var command = connection.CreateCommand();
-            command.Transaction = transaction;
-            command.CommandText = @"
-                INSERT INTO KeyStats (Date, KeyName, Count)
-                VALUES ($date, $keyName, $count)
-                ON CONFLICT(Date, KeyName) DO UPDATE SET Count = Count + $count;
-            ";
-            
-            var dateParam = command.Parameters.Add("$date", SqliteType.Text);
-            var keyParam = command.Parameters.Add("$keyName", SqliteType.Text);
-            var countParam = command.Parameters.Add("$count", SqliteType.Integer);
-
-            dateParam.Value = date;
-
-            foreach (var kvp in keys)
+            Action<string> execute = (connString) =>
             {
-                keyParam.Value = kvp.Key;
-                countParam.Value = kvp.Value;
-                command.ExecuteNonQuery();
-            }
+                try
+                {
+                    using var connection = new SqliteConnection(connString);
+                    connection.Open();
+                    using var transaction = connection.BeginTransaction();
 
-            transaction.Commit();
-        }
-        
+                    var command = connection.CreateCommand();
+                    command.Transaction = transaction;
+                    command.CommandText = @"
+                        INSERT INTO KeyStats (Date, KeyName, Count)
+                        VALUES ($date, $keyName, $count)
+                        ON CONFLICT(Date, KeyName) DO UPDATE SET Count = Count + $count;
+                    ";
+                    
+                    var dateParam = command.Parameters.Add("$date", SqliteType.Text);
+                    var keyParam = command.Parameters.Add("$keyName", SqliteType.Text);
+                    var countParam = command.Parameters.Add("$count", SqliteType.Integer);
+
+                    dateParam.Value = date;
+
+                    foreach (var kvp in keys)
+                    {
+                        keyParam.Value = kvp.Key;
+                        countParam.Value = kvp.Value;
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch { }
+            };
+
+            execute(_connectionString);
+            execute(_backupConnectionString);
+        }        
         public void IncrementMouseCounts(string date, Dictionary<string, int> buttons)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-
-            var command = connection.CreateCommand();
-            command.Transaction = transaction;
-            command.CommandText = @"
-                INSERT INTO MouseStats (Date, ButtonName, Count)
-                VALUES ($date, $buttonName, $count)
-                ON CONFLICT(Date, ButtonName) DO UPDATE SET Count = Count + $count;
-            ";
-            
-            var dateParam = command.Parameters.Add("$date", SqliteType.Text);
-            var btnParam = command.Parameters.Add("$buttonName", SqliteType.Text);
-            var countParam = command.Parameters.Add("$count", SqliteType.Integer);
-
-            dateParam.Value = date;
-
-            foreach (var kvp in buttons)
+            Action<string> execute = (connString) =>
             {
-                btnParam.Value = kvp.Key;
-                countParam.Value = kvp.Value;
-                command.ExecuteNonQuery();
-            }
+                try
+                {
+                    using var connection = new SqliteConnection(connString);
+                    connection.Open();
+                    using var transaction = connection.BeginTransaction();
 
-            transaction.Commit();
+                    var command = connection.CreateCommand();
+                    command.Transaction = transaction;
+                    command.CommandText = @"
+                        INSERT INTO MouseStats (Date, ButtonName, Count)
+                        VALUES ($date, $buttonName, $count)
+                        ON CONFLICT(Date, ButtonName) DO UPDATE SET Count = Count + $count;
+                    ";
+                    
+                    var dateParam = command.Parameters.Add("$date", SqliteType.Text);
+                    var btnParam = command.Parameters.Add("$buttonName", SqliteType.Text);
+                    var countParam = command.Parameters.Add("$count", SqliteType.Integer);
+
+                    dateParam.Value = date;
+
+                    foreach (var kvp in buttons)
+                    {
+                        btnParam.Value = kvp.Key;
+                        countParam.Value = kvp.Value;
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch { }
+            };
+
+            execute(_connectionString);
+            execute(_backupConnectionString);
         }
-
         public void IncrementScrollTicks(string date, int delta)
         {
             string direction = delta > 0 ? "Up" : "Down";
             int ticks = Math.Abs(delta);
 
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText = @"
-                INSERT INTO ScrollStats (Date, Direction, Ticks)
-                VALUES ($date, $direction, $ticks)
-                ON CONFLICT(Date, Direction) DO UPDATE SET Ticks = Ticks + $ticks;
-            ";
-            command.Parameters.AddWithValue("$date", date);
-            command.Parameters.AddWithValue("$direction", direction);
-            command.Parameters.AddWithValue("$ticks", ticks);
-            command.ExecuteNonQuery();
+            Action<string> execute = (connString) =>
+            {
+                try
+                {
+                    using var connection = new SqliteConnection(connString);
+                    connection.Open();
+                    var command = connection.CreateCommand();
+                    command.CommandText = @"
+                        INSERT INTO ScrollStats (Date, Direction, Ticks)
+                        VALUES ($date, $direction, $ticks)
+                        ON CONFLICT(Date, Direction) DO UPDATE SET Ticks = Ticks + $ticks;
+                    ";
+                    command.Parameters.AddWithValue("$date", date);
+                    command.Parameters.AddWithValue("$direction", direction);
+                    command.Parameters.AddWithValue("$ticks", ticks);
+                    command.ExecuteNonQuery();
+                }
+                catch { }
+            };
+
+            execute(_connectionString);
+            execute(_backupConnectionString);
         }
 
         public (int Keystrokes, int MouseClicks, int ScrollTicks) GetTodayTotals(string date)

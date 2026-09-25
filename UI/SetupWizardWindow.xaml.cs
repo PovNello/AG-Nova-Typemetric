@@ -14,6 +14,12 @@ namespace Typemetric.UI
             InitializeComponent();
         }
 
+        private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+                this.DragMove();
+        }
+
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog
@@ -30,7 +36,7 @@ namespace Typemetric.UI
             }
         }
 
-        private void InitButton_Click(object sender, RoutedEventArgs e)
+        private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(PathTextBox.Text))
             {
@@ -38,9 +44,30 @@ namespace Typemetric.UI
                 return;
             }
 
+            Step1Grid.Visibility = Visibility.Collapsed;
+            Step2Grid.Visibility = Visibility.Visible;
+        }
+
+        private void InitButton_Click(object sender, RoutedEventArgs e)
+        {
             SelectedDbPath = PathTextBox.Text;
-            var config = new AppConfig { DbPath = SelectedDbPath };
-            config.Save();
+            bool runAtStartup = StartupCheckBox.IsChecked == true;
+
+            var config = new AppConfig { DbPath = SelectedDbPath, RunAtStartup = runAtStartup };
+            if (!config.Save())
+            {
+                MessageBox.Show("Unable to save configuration in the application directory. Please run the application as Administrator, or move the application to a user folder (like Documents or Desktop).", "Permission Denied", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (runAtStartup)
+            {
+                StartupManager.EnableRunAtStartup();
+            }
+            else
+            {
+                StartupManager.DisableRunAtStartup();
+            }
 
             this.DialogResult = true;
             this.Close();

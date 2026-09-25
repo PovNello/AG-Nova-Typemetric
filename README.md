@@ -1,6 +1,6 @@
 # Typemetric
 
-Typemetric is a lightweight, low-footprint Windows telemetry application designed to track and aggregate keystrokes and mouse clicks in real-time. It provides a visual, interactive heatmap of peripheral usage without compromising privacy.
+Typemetric is a lightweight, low-footprint, 100% portable Windows telemetry application designed to track and aggregate keystrokes and mouse clicks in real-time. It provides a visual, interactive heatmap of peripheral usage without compromising privacy.
 
 ## Project Documentation (For AI Agents & Developers)
 
